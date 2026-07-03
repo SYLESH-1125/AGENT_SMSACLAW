@@ -145,11 +145,24 @@ function Show-InfoPopup([string]$title, [string]$text, [bool]$ok = $true) {
 }
 
 function Get-LastCopilotBlock([string]$logFile) {
-    if (-not (Test-Path $logFile)) { return '' }
-    $md = Get-Content $logFile -Raw -Encoding UTF8
+    # copilot flushes the --share transcript at teardown - wait for it (race fix)
+    $md = ''
+    for ($i = 0; $i -lt 10; $i++) {
+        if (Test-Path $logFile) {
+            $md = Get-Content $logFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
+            if ($md -and $md -match '### Copilot') { break }
+        }
+        Start-Sleep -Seconds 2
+    }
+    if (-not $md) { return '' }
+    # return everything after the LAST '### Copilot' marker that has real content
     $mm = [regex]::Matches($md, '(?s)### Copilot\r?\n(.*?)(?=\r?\n---|\z)')
-    if ($mm.Count -gt 0) { return $mm[$mm.Count - 1].Groups[1].Value.Trim() }
-    return ''
+    for ($j = $mm.Count - 1; $j -ge 0; $j--) {
+        $v = $mm[$j].Groups[1].Value.Trim()
+        if ($v) { return $v }
+    }
+    # fallback: scan whole file (SUMMARY/QUESTION/APP_ENTRY searches still work)
+    return $md
 }
 
 function Get-SessionIdFromLog([string]$logFile) {
