@@ -1,0 +1,18 @@
+{
+  "inbox": "C:\\Users\\<you>\\OneDrive - <Company>\\PMBridge\\inbox",
+  "outbox": "C:\\Users\\<you>\\OneDrive - <Company>\\PMBridge\\outbox",
+  "media": "C:\\Users\\<you>\\OneDrive - <Company>\\PMBridge\\media",
+  "workspace": "C:\\Users\\<you>\\pm-builds\\workspace",
+  "logs": "C:\\Users\\<you>\\pm-builds\\logs",
+  "archive": "C:\\Users\\<you>\\pm-builds\\archive",
+  "rejected": "C:\\Users\\<you>\\pm-builds\\rejected",
+  "state": "C:\\Users\\<you>\\pm-builds\\state",
+  "pollSeconds": 15,
+  "requireApproval": true,
+  "popupApproval": true,
+  "allowedSenders": ["<Your PM's display name>"],
+  "model": "",
+  "extraCopilotArgs": [],
+  "video": true,
+  "maxQuestionRounds": 3
+}

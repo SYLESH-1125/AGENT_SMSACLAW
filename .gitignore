@@ -1,0 +1,18 @@
+# runtime data - never publish
+logs/
+archive/
+rejected/
+state/
+workspace/
+outbox/
+media/
+*.bak
+watcher.ps1.bak
+
+# local machine config (contains names/paths) - use config.example.json
+config.json
+
+# node
+tools/node_modules/
+tools/package-lock.json
+tools/test-video*.webm
