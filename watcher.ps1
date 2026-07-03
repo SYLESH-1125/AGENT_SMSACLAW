@@ -197,11 +197,16 @@ RULES:
   built, where it lives, and how to run it.
 - If the result is a web app, also add a final line exactly like:
   APP_ENTRY: <relative path to the main html file>
-  AND create a file named demo-script.json in the app folder: a valid JSON array of up
-  to 12 demo steps showcasing the app's main features. Each step is an object with keys:
-  action (one of: click, type, scroll, wait), selector (a CSS selector), text (only for
-  type steps), caption (a plain-English sentence explaining the feature to the PM).
-  Captions must explain WHAT the feature is and WHY it matters. Use reliable selectors.
+  AND create a file named demo-script.json in the app folder: a valid JSON array of 10-16
+  demo steps that SHOW EVERY MAJOR FEATURE ACTUALLY WORKING. Each step is an object with keys:
+  action (click | type | press | scroll | wait), selector (CSS, for click/type),
+  key + times + delayMs (for press - real keyboard keys like ArrowRight, Space, w),
+  text (for type), ms (for wait), caption (a natural conversational sentence - it becomes
+  the spoken voice-over, so write it the way a human presenter would speak).
+  CRITICAL: for games/keyboard apps use action "press" with real key names to show actual
+  gameplay (e.g. {"action":"press","key":"ArrowRight","times":6,"delayMs":150}).
+  NEVER use "type" to send key names. Interleave: caption step -> action steps -> caption.
+  Cover: starting the app, every main interaction, scoring/data changes, edge features.
 "@
 
 function Complete-Build($state, [string]$logFile, [int]$exit, [string]$liveLog) {
