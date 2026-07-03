@@ -65,7 +65,17 @@ function Move-Safe([string]$path, [string]$destDir, [string]$suffix) {
     $name = [IO.Path]::GetFileNameWithoutExtension($path)
     $ext  = [IO.Path]::GetExtension($path)
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-    Move-Item -Path $path -Destination (Join-Path $destDir "$name.$stamp$suffix$ext") -Force
+    # OneDrive may briefly lock files while syncing - retry, then copy+delete as fallback
+    for ($i = 0; $i -lt 5; $i++) {
+        try {
+            Move-Item -Path $path -Destination (Join-Path $destDir "$name.$stamp$suffix$ext") -Force -ErrorAction Stop
+            return
+        } catch { Start-Sleep -Seconds 3 }
+    }
+    try {
+        Copy-Item -Path $path -Destination (Join-Path $destDir "$name.$stamp$suffix$ext") -Force -ErrorAction Stop
+        Remove-Item -Path $path -Force -ErrorAction SilentlyContinue
+    } catch { Write-Host "!! could not move $path (locked)" -ForegroundColor Red }
 }
 
 function Send-Teams([string]$fileName, [string]$text) {
@@ -196,12 +206,20 @@ function Complete-Build($state, [string]$logFile, [int]$exit, [string]$liveLog) 
         return
     }
 
-    # Final -> commit, summary, video, reply
+    # Final -> commit, summary, video, reply  (git warnings must never abort delivery)
     Push-Location $workspace
+    $oldEap2 = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
     try {
-        git add -A 2>&1 | Out-Null
-        git commit -m "PM build $($state.id): $($state.task.Substring(0, [Math]::Min(60, $state.task.Length)))" --quiet 2>&1 | Out-Null
-    } finally { Pop-Location }
+        if (Test-Path (Join-Path $workspace '.verify-tmp')) { Remove-Item (Join-Path $workspace '.verify-tmp') -Recurse -Force -ErrorAction SilentlyContinue }
+        git add -A 2>$null | Out-Null
+        git commit -m "PM build $($state.id): $($state.task.Substring(0, [Math]::Min(60, $state.task.Length)))" --quiet 2>$null | Out-Null
+        if ($cfg.pushRemote) {
+            Write-Host ">> Pushing to $($cfg.pushRemote)..." -ForegroundColor Yellow
+            git push $cfg.pushRemote main 2>$null | Out-Null
+            if ($LASTEXITCODE -eq 0) { Write-Host ">> Pushed to remote repo." -ForegroundColor Green }
+            else { Write-Host "!! push failed (network?) - will retry after next build" -ForegroundColor Red }
+        }
+    } finally { $ErrorActionPreference = $oldEap2; Pop-Location }
 
     $summary = $block
     $sm = [regex]::Match($block, '(?s)SUMMARY:.*$')
@@ -241,7 +259,7 @@ Get-ChildItem `$ws -Recurse -File -EA SilentlyContinue | Where-Object { `$_.Full
 `$idle=0
 while (`$true) {
   `$active = (Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { `$_.CommandLine -match 'copilot' } | Measure-Object).Count
-  Get-ChildItem `$ws -Recurse -File -EA SilentlyContinue | Where-Object { `$_.FullName -notmatch '\\\.git\\' } | ForEach-Object {
+  Get-ChildItem `$ws -Recurse -File -EA SilentlyContinue | Where-Object { `$_.FullName -notmatch '\\(\.git|node_modules|\.verify-tmp)\\' } | ForEach-Object {
     `$k=`$_.FullName; `$v=`$_.LastWriteTime.Ticks
     if (-not `$seen.ContainsKey(`$k)) { Add-Content `$log "[+] created  `$(`$k.Replace(`$ws+'\',''))" -EA SilentlyContinue }
     elseif (`$seen[`$k] -ne `$v)      { Add-Content `$log "[~] updated  `$(`$k.Replace(`$ws+'\',''))" -EA SilentlyContinue }
@@ -389,8 +407,8 @@ while (-not $quit) {
       } catch {
         $emsg = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ERROR on $($f.Name): $($_.Exception.Message)"
         Write-Host "!! $emsg" -ForegroundColor Red
-        Add-Content -Path (Join-Path $logsDir 'watcher-errors.log') -Value $emsg
-        if (Test-Path $f.FullName) { Move-Safe $f.FullName $rejected '.error' }
+        try { Add-Content -Path (Join-Path $logsDir 'watcher-errors.log') -Value $emsg } catch { }
+        try { if (Test-Path $f.FullName) { Move-Safe $f.FullName $rejected '.error' } } catch { }
       }
     }
     if ($Once -or $quit) { break }

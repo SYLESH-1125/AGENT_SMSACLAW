@@ -1,4 +1,4 @@
-# runtime data - never publish
+﻿# runtime data - never publish
 logs/
 archive/
 rejected/
@@ -15,4 +15,5 @@ config.json
 # node
 tools/node_modules/
 tools/package-lock.json
-tools/test-video*.webm
+tools/test-*.webm
+
