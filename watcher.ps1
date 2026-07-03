@@ -122,7 +122,7 @@ function Show-ApprovalPopup($info) {
     $tmp = Join-Path $stateDir "approval-req.json"
     @{ title = "New task from $($info.from)"; body = "$($info.time)`r`n`r`n$task`r`n`r`nAPPROVE = build now    REJECT = decline (PM is notified)" } |
         ConvertTo-Json | Set-Content $tmp -Encoding UTF8
-    $p = Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"$PSScriptRoot\approve.ps1",'-MsgFile',$tmp) -PassThru -Wait
+    $p = Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"`"$PSScriptRoot\approve.ps1`"",'-MsgFile',"`"$tmp`"") -PassThru -Wait
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
     return $p.ExitCode
 }
@@ -131,7 +131,7 @@ function Show-InfoPopup([string]$title, [string]$text, [bool]$ok = $true) {
     if ($AutoApprove) { return }
     $tmp = Join-Path $stateDir "info-$([guid]::NewGuid().ToString('n').Substring(0,8)).json"
     @{ title = $title; body = $text } | ConvertTo-Json | Set-Content $tmp -Encoding UTF8
-    Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"$PSScriptRoot\approve.ps1",'-MsgFile',$tmp,'-Info') | Out-Null
+    Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"`"$PSScriptRoot\approve.ps1`"",'-MsgFile',"`"$tmp`"",'-Info') | Out-Null
 }
 
 function Get-LastCopilotBlock([string]$logFile) {
@@ -232,13 +232,37 @@ function Complete-Build($state, [string]$logFile, [int]$exit, [string]$liveLog) 
     Show-InfoPopup 'PM BRIDGE - Build finished' "Build $status`n`nTask: $($state.task)`n`nOutput: $workspace`nSummary sent to Teams." ($exit -eq 0)
 }
 
+function Start-FileMonitor([string]$liveLog) {
+    # Streams workspace file activity into the live log while a build runs
+    $monScript = Join-Path $stateDir "_mon-$([guid]::NewGuid().ToString('n').Substring(0,6)).ps1"
+    $body = @"
+`$ws='$workspace'; `$log='$liveLog'; `$seen=@{}
+Get-ChildItem `$ws -Recurse -File -EA SilentlyContinue | Where-Object { `$_.FullName -notmatch '\\\.git\\' } | ForEach-Object { `$seen[`$_.FullName]=`$_.LastWriteTime.Ticks }
+`$idle=0
+while (`$true) {
+  `$active = (Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { `$_.CommandLine -match 'copilot' } | Measure-Object).Count
+  Get-ChildItem `$ws -Recurse -File -EA SilentlyContinue | Where-Object { `$_.FullName -notmatch '\\\.git\\' } | ForEach-Object {
+    `$k=`$_.FullName; `$v=`$_.LastWriteTime.Ticks
+    if (-not `$seen.ContainsKey(`$k)) { Add-Content `$log "[+] created  `$(`$k.Replace(`$ws+'\',''))" -EA SilentlyContinue }
+    elseif (`$seen[`$k] -ne `$v)      { Add-Content `$log "[~] updated  `$(`$k.Replace(`$ws+'\',''))" -EA SilentlyContinue }
+    `$seen[`$k]=`$v }
+  if (`$active -eq 0) { `$idle++ } else { `$idle=0 }
+  if (`$idle -ge 3) { break }
+  Start-Sleep 3 }
+Remove-Item '$monScript' -Force -EA SilentlyContinue
+"@
+    Set-Content $monScript -Value $body -Encoding UTF8
+    Start-Process powershell -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"`"$monScript`"") | Out-Null
+}
+
 function Invoke-CopilotRound([string]$prompt, [string]$logFile, [string]$resumeId, [string]$liveLog) {
     # Native arg-passing mangles embedded double quotes -> replace with single quotes
     $prompt = $prompt -replace '"', "'"
     $cliArgs = @()
     if ($resumeId) { $cliArgs += @('--session-id', $resumeId) }
-    $cliArgs += @('-p', $prompt, '--allow-all-tools', '--no-ask-user', '--no-color', "--share=$logFile") + @($cfg.extraCopilotArgs)
+    $cliArgs += @('-p', $prompt, '--allow-all-tools', '--no-ask-user', '--no-color', '--stream', 'on', "--share=$logFile") + @($cfg.extraCopilotArgs)
     if ($cfg.model) { $cliArgs += @('--model', $cfg.model) }
+    if ($liveLog) { Start-FileMonitor $liveLog }
     Push-Location $workspace
     $oldEap = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'   # copilot writes progress to stderr; don't treat as crash
@@ -253,7 +277,8 @@ function Invoke-CopilotRound([string]$prompt, [string]$logFile, [string]$resumeI
 
 function Start-LiveViewer([string]$liveLog, [string]$title) {
     Set-Content -Path $liveLog -Value "PM BRIDGE LIVE BUILD`r`n$title`r`n$('=' * 70)" -Encoding UTF8
-    Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"$PSScriptRoot\progress-viewer.ps1",'-LogFile',$liveLog,'-Title',$title) | Out-Null
+    $safeTitle = ($title -replace '"', "'")
+    Start-Process powershell -ArgumentList @('-STA','-NoProfile','-NoLogo','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',"`"$PSScriptRoot\progress-viewer.ps1`"",'-LogFile',"`"$liveLog`"",'-Title',"`"$safeTitle`"") | Out-Null
 }
 
 function Start-Build($info) {
