@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" role="img" aria-label="PM Bridge UI mockup">
+<rect width="900" height="320" rx="16" fill="#0A0A0B" stroke="#2A2410"/>
+<rect x="0" y="0" width="900" height="36" rx="16" fill="#141210"/>
+<circle cx="24" cy="18" r="5" fill="#E8734A"/><circle cx="42" cy="18" r="5" fill="#E8C34A"/><circle cx="60" cy="18" r="5" fill="#6EA36E"/>
+<text x="450" y="23" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" fill="#8A8A8F">PM Bridge — Sample UI</text>
+<rect x="30" y="52" width="260" height="248" rx="12" fill="#17171A" stroke="#D4AF37" stroke-opacity="0.5"/>
+<text x="46" y="78" font-family="Segoe UI,sans-serif" font-size="13" font-weight="800" fill="#D4AF37">Approval</text>
+<rect x="46" y="100" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="54" y="115" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">Task from PM</text>
+<rect x="46" y="132" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="54" y="147" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">[ APPROVE ]</text>
+<rect x="46" y="164" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="54" y="179" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">[ REJECT ]</text>
+<rect x="320" y="52" width="260" height="248" rx="12" fill="#17171A" stroke="#D4AF37" stroke-opacity="0.5"/>
+<text x="336" y="78" font-family="Segoe UI,sans-serif" font-size="13" font-weight="800" fill="#D4AF37">Live Build</text>
+<rect x="336" y="100" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="344" y="115" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">PLAN streaming</text>
+<rect x="336" y="132" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="344" y="147" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">File edits</text>
+<rect x="336" y="164" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="344" y="179" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">Status updates</text>
+<rect x="610" y="52" width="260" height="248" rx="12" fill="#17171A" stroke="#D4AF37" stroke-opacity="0.5"/>
+<text x="626" y="78" font-family="Segoe UI,sans-serif" font-size="13" font-weight="800" fill="#D4AF37">Teams Reply</text>
+<rect x="626" y="100" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="634" y="115" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">Build started</text>
+<rect x="626" y="132" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="634" y="147" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">Question?</text>
+<rect x="626" y="164" width="228" height="22" rx="6" fill="#141210" stroke="#2A2410"/>
+<text x="634" y="179" font-family="Segoe UI,sans-serif" font-size="10" fill="#F2F1EC">Done + link</text>
+</svg>

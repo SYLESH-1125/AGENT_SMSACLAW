@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200" role="img" aria-label="PM Bridge flow">
+<rect width="900" height="200" rx="16" fill="#0A0A0B" stroke="#2A2410"/>
+<text x="450" y="32" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="16" font-weight="800" fill="#D4AF37">PM Bridge — Pipeline Flow</text>
+<rect x="-30" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="40.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">Teams Message</text>
+<text x="122.0" y="100" text-anchor="middle" font-size="18" fill="#E8A33D">→</text>
+<rect x="134" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="204.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">Inbox JSON</text>
+<text x="286.0" y="100" text-anchor="middle" font-size="18" fill="#E8A33D">→</text>
+<rect x="298" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="368.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">Approve Popup</text>
+<text x="450.0" y="100" text-anchor="middle" font-size="18" fill="#E8A33D">→</text>
+<rect x="462" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="532.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">AI Build</text>
+<text x="614.0" y="100" text-anchor="middle" font-size="18" fill="#E8A33D">→</text>
+<rect x="626" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="696.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">Q&A Loop</text>
+<text x="778.0" y="100" text-anchor="middle" font-size="18" fill="#E8A33D">→</text>
+<rect x="790" y="60" width="140" height="72" rx="10" fill="#17171A" stroke="#D4AF37"/>
+<text x="860.0" y="98" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#F2F1EC">Demo .webm</text>
+</svg>

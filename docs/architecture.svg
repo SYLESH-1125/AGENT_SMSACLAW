@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="PM Bridge architecture">
+<rect width="900" height="420" rx="16" fill="#0A0A0B" stroke="#2A2410"/>
+<text x="450" y="36" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="18" font-weight="800" fill="#D4AF37">PM Bridge — System Architecture</text>
+<rect x="60" y="80" width="160" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="140.0" y="113.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">Teams DM</text>
+<rect x="280" y="80" width="160" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="360.0" y="113.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">Power Automate</text>
+<rect x="500" y="80" width="160" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="580.0" y="113.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">OneDrive Sync</text>
+<rect x="720" y="80" width="120" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="780.0" y="113.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">watcher.ps1</text>
+<rect x="280" y="200" width="160" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="360.0" y="233.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">Copilot CLI</text>
+<rect x="500" y="200" width="160" height="56" rx="10" fill="#17171A" stroke="#D4AF37" stroke-width="1.2"/>
+<text x="580.0" y="233.0" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#F2F1EC">Demo Video</text>
+<line x1="220" y1="108" x2="280" y2="108" stroke="#E8A33D" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="440" y1="108" x2="500" y2="108" stroke="#E8A33D" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="660" y1="108" x2="720" y2="108" stroke="#E8A33D" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="780" y1="136" x2="360" y2="200" stroke="#E8A33D" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="440" y1="228" x2="500" y2="228" stroke="#E8A33D" stroke-width="2" marker-end="url(#arr)"/>
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#E8A33D"/></marker></defs>
+</svg>
